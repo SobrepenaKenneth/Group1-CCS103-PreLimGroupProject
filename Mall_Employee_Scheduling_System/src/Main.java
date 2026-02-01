@@ -1,7 +1,11 @@
 import java.util.Scanner;
+/**
+ * Version 0.2
+ */
 
 public class Main {
-	static Scanner rd = new Scanner(System.in);
+	static Scanner scan = new Scanner(System.in);
+	// Properties
 	static String shiftSchedule[][][] = new String[6][3][];
 	static String daySlotHeader[] = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
 	static char timeSlotHeader[] = {'M', 'A', 'E'};
@@ -16,7 +20,6 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Initialisation();
-		
 		while(true) {
 		SeeList(0);
 		Menu();
@@ -33,7 +36,7 @@ public class Main {
 						   "[4] Search Employee\n" + 
 						   "[5] Exit System\n");
 		
-		switch(Integer.parseInt(rd.nextLine())) {
+		switch(Integer.parseInt(scan.nextLine())) {
 		case 1: 
 			
 			//TODO: Employee Schedule
@@ -79,7 +82,7 @@ public class Main {
 		seeEmployeeList();
 		System.out.println("[!] Type 'cancel' to return to menu.");
 		
-		input = rd.nextLine();
+		input = scan.nextLine();
 		
 		//Loop through the employees 2D array for a match.
 		for (int i = 0; i < employees.length; i++) {
@@ -103,7 +106,7 @@ public class Main {
 		System.out.println("> Select Day to add Employee's shift to (MONDAY-" + daySlotHeader[days-1] + "):");
 		System.out.println("[!] Type 'cancel' to return to menu.");
 		
-		input = rd.nextLine().toLowerCase();
+		input = scan.nextLine().toLowerCase();
 		
 		switch(input) {
 		case "monday":
@@ -140,7 +143,7 @@ public class Main {
 			System.out.println("> Select Time slot to add the shift to:");
 			System.out.println("(M: Morning, A: Afternoon, E: Evening)");
 			
-			input = rd.nextLine().toLowerCase();
+			input = scan.nextLine().toLowerCase();
 			
 			switch(input) {
 			case "m":
@@ -258,11 +261,18 @@ public class Main {
 
 	
 	public static void Initialisation() {
+		System.out.println("===========================================");
+		System.out.println("      MALL EMPLOYEE SCHEDULING SYSTEM      ");
+		System.out.println("===========================================");
 		
-		System.out.println("Welcome to Generic Shift Scheduling Manager !© 2026 .");
-		System.out.println("\n\n<<Press Enter to Begin Setup Process>>");
+		System.out.println("\n   <<Press Enter to Begin Setup Process>>");
+		scan.nextLine();
 		
-		rd.nextLine();
+		System.out.println("===========================================");
+		System.out.println("Shift Legend: \n\tM = Morning   \n\tA = Afternoon \n\tE = Evening");
+		System.out.println("===========================================");
+		
+		// Ken note: Show the Current Employee Schedule After this
 		
 		// Set available Shift slots per day.
 		System.out.println("Set the amount of shift slots for each time slots for each day: ");
@@ -273,7 +283,7 @@ public class Main {
 				System.out.print("Set Shift Slots for " + timeSlotHeader[time]  + " of "+ daySlotHeader[day] + ": ");
 				while(true) {
 					try {
-					shiftSchedule[day][time] = new String[Integer.parseInt(rd.nextLine())];	
+					shiftSchedule[day][time] = new String[Integer.parseInt(scan.nextLine())];	
 					break;
 					} catch(NumberFormatException e) {
 						System.out.println("> Error: Invalid Input! ");
