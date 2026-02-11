@@ -2,7 +2,7 @@
 import java.util.Scanner;
 
 /**
- * Version 0.4 palitan tong version everytime na mag edit po kayo! Always
+ * Version 1.0 palitan tong version everytime na mag edit po kayo! Always
  * refresh!!
  * 
  * We will assist as much as we can!
@@ -16,12 +16,12 @@ public class EmployeeSchedulingSystem {
 	private static final int column = 6;
 	// Arrays for Days [COLUMN]
 	private static String daySlotHeader[] = 
-    { "MONDAY      ", 
-      "TUESDAY     ", 
-      "WEDNESDAY   ", 
-      "THURSDAY    ",
-      "FRIDAY      ", 
-      "SATURDAY    " };
+    { "MONDAY       ", 
+      "TUESDAY      ", 
+      "WEDNESDAY    ", 
+      "THURSDAY     ",
+      "FRIDAY       ", 
+      "SATURDAY     " };
 	// Arrays for Shifts [ROW]
 	private static String shiftSlotHeader[] = { "M", "A", "E" };
 	// Arrays for Employees [LAYERS]
@@ -42,12 +42,12 @@ public class EmployeeSchedulingSystem {
 	private static int input = 0;
 
 	public static void main(String[] args) {
-		System.out.println("======================================================");
-		System.out.println("            MALL EMPLOYEE SCHEDULING SYSTEM          ");
-		System.out.println("======================================================");
+		System.out.println("====================================================================");
+		System.out.println("                   MALL EMPLOYEE SCHEDULING SYSTEM                  ");
+		System.out.println("====================================================================");
 		System.out.println("Legend: M = Morning | A = Afternoon | E - Evening");
 
-		System.out.println("\n      <<Press Enter to Begin Setup Process>>");
+		System.out.println("\n\t        <<Press Enter to Begin Setup Process>>");
 		scan.nextLine();
 		displaySchedule();
 		menuController();
@@ -59,10 +59,10 @@ public class EmployeeSchedulingSystem {
 	 */
 	public static void displaySchedule() {
 
-		System.out.println("======================================================");
-		System.out.println("\t\t   EMPLOYEE SCHEDULE");
-		System.out.println("======================================================");
-		System.out.println("DAY         MORNING(M)      AFTERNOON(A)    EVENING(E)");
+		System.out.println("====================================================================");
+		System.out.println("\t\t         EMPLOYEE SCHEDULE");
+		System.out.println("====================================================================");
+		System.out.println("DAY          MORNING(M)           AFTERNOON(A)            EVENING(E)");
 
 		// Loop through each DAY
 		for (int day = 0; day < daySlotHeader.length; day++) {
@@ -92,14 +92,14 @@ public class EmployeeSchedulingSystem {
 				if (row == 0) {
 					System.out.print(daySlotHeader[day]);
 				} else {
-					System.out.print("            "); // 12 spaces
+					System.out.print("*************"); // 16 spaces
 
 				}
 
 				// Loop through SHIFTs
 				for (int shift = 0; shift < shiftSlotHeader.length; shift++) {
 					int index = 0;
-					String output = " ";
+					String output = "   ";
 					// This find EMPLOYEE for Row
 					for (int emp = 0; emp < employees.length; emp++) {
 						if (mallSchedule[emp][shift][day] == null)
@@ -110,7 +110,7 @@ public class EmployeeSchedulingSystem {
 						}
 						index++;
 					}
-					System.out.print(output + "               ");
+					System.out.print(output + "**********"); // 6 spaces
 
 				}
 
@@ -145,9 +145,9 @@ public class EmployeeSchedulingSystem {
 	 */
 	public static void assignEmployee() {
 		scan.nextLine(); // consume leftover newline
-		System.out.println("======================================================");
+		System.out.println("====================================================================");
 		System.out.println("\t\t   ASSIGN EMPLOYEE");
-		System.out.println("======================================================");
+		System.out.println("====================================================================");
 
 		// --- Step 1: Input Day ---
 		System.out.print("Enter Day (MON, TUE, WED, THU, FRI, SAT): ");
@@ -263,9 +263,9 @@ public class EmployeeSchedulingSystem {
 	 * REQUIRED METHOD Assigned to : Ken ver - 1
 	 */
 	public static void menuController() {
-		System.out.println("======================================================");
-		System.out.println("\t\t\tMAIN-MENU");
-		System.out.println("======================================================");
+		System.out.println("====================================================================");
+		System.out.println("\t\t\t     MAIN-MENU");
+		System.out.println("====================================================================");
 		System.out.println("[1] View Employee Schedule");
 		System.out.println("[2] Assign Employee to a Shift");
 		System.out.println("[3] Update / Remove Employee");
@@ -303,9 +303,9 @@ public class EmployeeSchedulingSystem {
 	}// menuController() method
 
 	public static void searchEmployee() {
-		System.out.println("===================================================");
+		System.out.println("====================================================================");
 		System.out.println("\t\t SEARCH EMPLOYEE");
-		System.out.println("===================================================");
+		System.out.println("====================================================================");
 
 		scan.nextLine();
 
