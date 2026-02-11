@@ -15,8 +15,13 @@ public class EmployeeSchedulingSystem {
 	private static final int row = 3;
 	private static final int column = 6;
 	// Arrays for Days [COLUMN]
-	private static String daySlotHeader[] = { "MONDAY      ", "TUESDAY     ", "WEDNESDAY   ", "THURSDAY    ",
-			"FRIDAY      ", "SATURDAY    " };
+	private static String daySlotHeader[] = 
+    { "MONDAY      ", 
+      "TUESDAY     ", 
+      "WEDNESDAY   ", 
+      "THURSDAY    ",
+      "FRIDAY      ", 
+      "SATURDAY    " };
 	// Arrays for Shifts [ROW]
 	private static String shiftSlotHeader[] = { "M", "A", "E" };
 	// Arrays for Employees [LAYERS]
@@ -244,9 +249,9 @@ public class EmployeeSchedulingSystem {
 		}
 
 		if (assigned) {
-			System.out.println("Employee successfully assigned.");
+			System.out.println("\nEmployee successfully assigned.\n");
 		} else {
-			System.out.println("Shift is already full. Cannot assign employee.");
+			System.out.println("\nShift is already full. Cannot assign employee.\n");
 			return;
 		}
 
@@ -283,6 +288,7 @@ public class EmployeeSchedulingSystem {
 		case 3:
 			break;
 		case 4:
+			searchEmployee();
 			break;
 		case 5:
 			exit();
@@ -296,8 +302,64 @@ public class EmployeeSchedulingSystem {
 		}
 	}// menuController() method
 
-	public static void dailySummaryReport() {
+	public static void searchEmployee() {
+		System.out.println("===================================================");
+		System.out.println("\t\t SEARCH EMPLOYEE");
+		System.out.println("===================================================");
 
+		scan.nextLine();
+
+		System.out.print("Enter Employee Name to Search: ");
+		String searchName = scan.nextLine();
+
+		boolean found = false;
+		int employeeIndex = 0;
+
+		// Find the employee index based on name that user input
+		for (int i = 0; i < employees.length; i++) {
+			if (employees[i].equals(searchName)) {
+				found = true;
+				employeeIndex = i;
+				break;
+			}
+		}
+
+		if (found) {
+			System.out.println("\n--- Employee Found! ---");
+			System.out.println("Name: " + employees[employeeIndex]);
+			System.out.println("Role: " + employeeRoles[employeeIndex]);
+			System.out.println("-----------------------");
+			System.out.println("Current Schedule:");
+
+			boolean hasSchedule = false;
+
+			// Look for each index to find the employeeSchedule
+			// mallSchedule dimensions: [Employee][Shift][Day]
+			for (int d = 0; d < daySlotHeader.length; d++) {
+				for (int s = 0; s < shiftSlotHeader.length; s++) {
+
+					// Check if the slot have variable and not null
+					String slotValue = mallSchedule[employeeIndex][s][d];
+
+					if (slotValue != null && !slotValue.isEmpty()) {
+						System.out.println("> " + daySlotHeader[d] + " - " + shiftSlotHeader[s] + " Shift");
+						hasSchedule = true;
+					}
+				}
+			}
+
+			if (!hasSchedule) {
+				System.out.println("No shifts assigned yet.");
+			}
+
+		} else {
+			System.out.println("\n Invalid: Employee \" " + searchName + "\" not found in the database.");
+		}
+
+		// Short pause before going back to menu
+		System.out.println("\nPress Enter to return to Main Menu...");
+		scan.nextLine();
+		menuController();
 	}
 
 	public static void exit() {
