@@ -1,5 +1,4 @@
 
-
 import java.util.Scanner;
 
 /**
@@ -16,28 +15,36 @@ public class EmployeeSchedulingSystem {
 	private static final int row = 3;
 	private static final int column = 6;
 	// Arrays for Days [COLUMN]
-	private static String daySlotHeader[] = { "MON", "TUE", "WED", "THU", "FRI", "SAT" };
+	private static String daySlotHeader[] = { "MONDAY      ", "TUESDAY     ", "WEDNESDAY   ", "THURSDAY    ",
+			"FRIDAY      ", "SATURDAY    " };
 	// Arrays for Shifts [ROW]
 	private static String shiftSlotHeader[] = { "M", "A", "E" };
 	// Arrays for Employees [LAYERS]
-	private static String employees[] = { "Kenneth", "Paz", "Diamante" };
+	private static String employees[][] = { { "DR", "Who?", "Dr. of Intestinal Parasites" },
+			{ "ENGY", "Dell", "Texan" }, { "SLKS", "Hornet", "UsedtoBeBelievable" },
+			{ "CRUS", "John Dungeon", "Crusader" } };
 	// Arrays for Employees Roles
 	private static String employeeRoles[] = { "Homeless", "Cashier", "Security" };
 	// Arrays for Mall Schedule
-	private static String mallSchedule[][][] = new String[employees.length][shiftSlotHeader.length][(daySlotHeader.length + 1)];
+	private static String mallSchedule[][][] = new String[employees.length][shiftSlotHeader.length][(daySlotHeader.length
+			+ 1)];
+	private static int days = 6; // faces
+	static final int timeSlot = 3; //
+	static int shifts; // columns
+	static String userInput = ""; // User Input container.
 
 	// user input used in Menu
 	private static int input = 0;
 
 	public static void main(String[] args) {
-		System.out.println("===================================================");
-		System.out.println("          MALL EMPLOYEE SCHEDULING SYSTEM          ");
-		System.out.println("===================================================");
+		System.out.println("======================================================");
+		System.out.println("            MALL EMPLOYEE SCHEDULING SYSTEM          ");
+		System.out.println("======================================================");
 		System.out.println("Legend: M = Morning | A = Afternoon | E - Evening");
 
 		System.out.println("\n      <<Press Enter to Begin Setup Process>>");
 		scan.nextLine();
-
+		displaySchedule();
 		menuController();
 
 	}
@@ -46,249 +53,220 @@ public class EmployeeSchedulingSystem {
 	 * REQUIRED METHOD Assigned to : Abo-Abo ver - 1
 	 */
 	public static void displaySchedule() {
-		
-		System.out.println("===================================================");
-		System.out.println("\t\t EMPLOYEE SCHEDULE");
-		System.out.println("===================================================");
-			
-		// day headers
-		System.out.print("Shift\t");
-			for ( int day = 0; day < daySlotHeader.length; day++) {
-				System.out.print(daySlotHeader[day] + "\t");
-			}
-			System.out.println();
-		
-			
-			// Loop through the shifts (Morning, Afternoon, and Evening)
+
+		System.out.println("======================================================");
+		System.out.println("\t\t   EMPLOYEE SCHEDULE");
+		System.out.println("======================================================");
+		System.out.println("DAY         MORNING(M)      AFTERNOON(A)    EVENING(E)");
+
+		// Loop through each DAY
+		for (int day = 0; day < daySlotHeader.length; day++) {
+
+			int maxRows = 1;
+
+			// This find MAX STACKED rows
 			for (int shift = 0; shift < shiftSlotHeader.length; shift++) {
-				System.out.print(shiftSlotHeader[shift] + "\t");
-				
-				
-				// Loop through the days
-				for (int day = 0; day < daySlotHeader.length; day++) {
-					
-					int employeeCount = 0;
-					
-					// Loop through the employees
-					for (int emp = 0; emp < employees.length; emp++) {
-						if (mallSchedule[emp][shift][day] != null) {
-							employeeCount++;
-						}
-					}
-						if ( employeeCount == 0) {
-							System.out.print("-\t");
-					} else {
-						System.out.print(employeeCount + "\t");
-					}
+
+				int count = 0;
+				// Loop through each EMPLOYEE
+				for (int emp = 0; emp < employees.length; emp++) {
+					if (mallSchedule[emp][shift][day] == null)
+						continue;
+					count++;
 				}
+
+				if (count > maxRows) {
+					maxRows = count;
+				}
+			}
+
+			// This print STACKED ROWs
+			for (int row = 0; row < maxRows; row++) {
+
+				// Print day only on first row
+				if (row == 0) {
+					System.out.print(daySlotHeader[day]);
+				} else {
+					System.out.print("            "); // 12 spaces
+
+				}
+
+				// Loop through SHIFTs
+				for (int shift = 0; shift < shiftSlotHeader.length; shift++) {
+					int index = 0;
+					String output = " ";
+					// This find EMPLOYEE for Row
+					for (int emp = 0; emp < employees.length; emp++) {
+						if (mallSchedule[emp][shift][day] == null)
+							continue;
+						if (index == row) {
+							output = mallSchedule[emp][shift][day]; // print the actual assigned employee
+							break;
+						}
+						index++;
+					}
+					System.out.print(output + "               ");
+
+				}
+
 				System.out.println();
 			}
-			
-			System.out.println("\nTOTAL EMPLOYEES PER DAY:");
-			
-			for (int day = 0; day < daySlotHeader.length; day++) {
-				
-				int total = 0; 
-				
-				for (int shift = 0; shift < shiftSlotHeader.length; shift++) {
-					for (int emp = 0; emp < employees.length; emp++) {
-						if (mallSchedule[emp][shift][day] != null) {
-							total++;
-						}
-					}
+		}
+
+		// TOTAL EMPLOYEES PER DAY
+		System.out.println("\nTOTAL EMPLOYEES PER DAY:");
+
+		for (int day = 0; day < daySlotHeader.length; day++) {
+
+			int total = 0;
+
+			for (int shift = 0; shift < shiftSlotHeader.length; shift++) {
+				for (int emp = 0; emp < employees.length; emp++) {
+
+					if (mallSchedule[emp][shift][day] == null)
+						continue;
+					total++;
 				}
-				System.out.println(daySlotHeader[day] + ": " + total);
 			}
+
+			System.out.println(daySlotHeader[day] + ": " + total);
+		}
+		System.out.println();
+		menuController();
 	}
 
 	/*
 	 * REQUIRED METHOD Assigned to : Paz ver - 0
 	 */
 	public static void assignEmployee() {
-		//XXX: Waiting for Input Validation
-		
-		int targetSheet = 0, targetRow = 0;
-		int employeeRow = 0;
-		String shiftEntry = null;
-		
-System.out.println(">> Assigning Employee to Shift:");
-		
-		
-		employeeSelect: while(true) { // Tags outer loop for easy breaking.
-		if(input != null && input.equals("cancel")) break; //Automatically exits if user types cancel once.
-		
-		System.out.println("> Select Employee to Assign:");
-		
-		seeEmployeeList();
-		System.out.println("[!] Type 'cancel' to return to menu.");
-		
-		input = rd.nextLine();
-		
-		//Loop through the employees 2D array for a match.
-		for (int i = 0; i < employees.length; i++) {
+		scan.nextLine(); // consume leftover newline
+		System.out.println("======================================================");
+		System.out.println("\t\t   ASSIGN EMPLOYEE");
+		System.out.println("======================================================");
 
-			//If match is found:
-			if (input.equals(employees[i][0])) {
-				System.out.println("> ID match for " + input + " found.");
-				shiftEntry = employees[i][1] + "(" + employees[i][2] + ")";
-				employeeRow = i;
-				break employeeSelect; //Break out of the Outer while loop
-				
-			} else if((i + 1) == employees.length)System.out.println("> No ID match for " + input + " found. Did you make a typo?");
-			 // ^ Only displays on the last loop.
-		}
-		
-		}
-		
-		
-		
-		daySelect: while(true) { // Tags outer loop for easy breaking.
-		if(input != null && input.equals("cancel")) break;
-		
-		System.out.println("> Select Day to add Employee's shift to (MONDAY-" + daySlotHeader[days-1] + "):");
-		System.out.println("[!] Type 'cancel' to return to menu.");
-		
-		input = rd.nextLine().toLowerCase();
-		
-		switch(input) {
-		case "monday":
-			targetSheet = 0;
-			System.out.println("> Shift will be added to " + input + ".");
-			break daySelect; //Breaks outer loop.
-		case "tuesday":
-			targetSheet = 1;
-			break daySelect;
-		case "wednesday":
-			targetSheet = 2;
-			break daySelect;
-		case "thursday":
-			targetSheet = 3;
-		case "friday":
-			targetSheet = 4;
-			break daySelect;
-		case "saturday":
-			targetSheet = 5;
-			break daySelect;
-		case "cancel":			
-			break daySelect;
-		default:
-			System.out.println("> " + input + " is not a valid day. Did you make a typo?");
+		// --- Step 1: Input Day ---
+		System.out.print("Enter Day (MON, TUE, WED, THU, FRI, SAT): ");
+		String dayInput = scan.nextLine().toUpperCase();
+
+		int dayIndex = -1;
+
+		switch (dayInput) {
+		case "MON":
+			dayIndex = 0;
 			break;
+		case "TUE":
+			dayIndex = 1;
+			break;
+		case "WED":
+			dayIndex = 2;
+			break;
+		case "THU":
+			dayIndex = 3;
+			break;
+		case "FRI":
+			dayIndex = 4;
+			break;
+		case "SAT":
+			dayIndex = 5;
+			break;
+		default:
+			dayIndex = -1;
 		}
+
+		if (dayIndex == -1) {
+			System.out.println("Invalid Day!");
+			return;
 		}
-		
-		
-		
-		timeSelect: while(true) { // Tags outer loop for easy breaking.
-			if(input != null && input.equals("cancel")) break timeSelect;
-			
-			System.out.println("> Select Time slot to add the shift to:");
-			System.out.println("(M: Morning, A: Afternoon, E: Evening)");
-			
-			input = rd.nextLine().toLowerCase();
-			
-			switch(input) {
-			case "m":
-				targetRow = 0;
-				break timeSelect; // Breaks outer loop.
-			case "a":
-				targetRow = 1;
-				break timeSelect;
-			case "e":
-				targetRow = 2;
-				break timeSelect;
-			default:
-				System.out.println("> " + input + " is not a valid time slot. Did you make a typo?");
+
+		// --- Step 2: Input Shift ---
+		System.out.print("Enter Shift (M/A/E): ");
+		String shiftInput = scan.nextLine().toUpperCase();
+
+		int shiftIndex = -1;
+
+		switch (shiftInput) {
+		case "M":
+			shiftIndex = 0;
+			break;
+		case "A":
+			shiftIndex = 1;
+			break;
+		case "E":
+			shiftIndex = 2;
+			break;
+		default:
+			shiftIndex = -1;
+		}
+
+		if (shiftIndex == -1) {
+			System.out.println("Invalid Shift!");
+			return;
+		}
+
+		// --- Step 3: Input Employee Info ---
+		System.out.print("Enter Employee ID: ");
+		String empID = scan.nextLine();
+
+		System.out.print("Enter Employee Name: ");
+		String empName = scan.nextLine();
+
+		System.out.print("Enter Role: ");
+		String empRole = scan.nextLine();
+
+		// --- Step 4: Check for duplicate on the same day ---
+		boolean duplicate = false;
+
+		for (int emp = 0; emp < mallSchedule.length; emp++) {
+			for (int s = 0; s < shiftSlotHeader.length; s++) {
+				String assigned = mallSchedule[emp][s][dayIndex];
+				if (assigned != null && assigned.startsWith(empID + " -")) {
+					duplicate = true;
+					break;
+				}
+			}
+			if (duplicate)
 				break;
-			
-			}
-			
 		}
-		
-		if(dupeChecker(shiftEntry)) { // Calls the method that checks if a duplicate entry exists.
-			System.out.println("> Employee is already assigned to a shift for this day!");
-			return; // Go back to main(), skip the assignment code.
-		} 
-		
-		if(input != null && input.equals("cancel")) {input = null; return;}
-		for(int i = 0; i < shiftSchedule[targetSheet][targetRow].length; i++) {
-			
-			
-			if(shiftSchedule[targetSheet][targetRow][i].equals("-")) // Checks if the slot is empty.
-			{
-				shiftSchedule[targetSheet][targetRow][i] = shiftEntry;
-				System.out.println("> " + employees[employeeRow][1] + " was assigned to " + timeSlotHeader[targetRow] + " slot for "+  daySlotHeader[targetSheet] + ".");
+
+		if (duplicate) {
+			System.out.println("SCHEDULE ALREADY ASSIGNED FOR THIS EMPLOYEE!");
+			return;
+		}
+
+		// --- Step 5: Assign employee to the first available slot in the shift ---
+		boolean assigned = false;
+		for (int emp = 0; emp < mallSchedule.length; emp++) {
+			if (mallSchedule[emp][shiftIndex][dayIndex] == null) {
+				mallSchedule[emp][shiftIndex][dayIndex] = empID + " - " + empName;
+				assigned = true;
 				break;
-			} else if((i+1) == shiftSchedule[targetSheet][targetRow].length) { // Display on the last iteration.
-				System.out.println("> Couldn't assign " + employees[employeeRow][1] + " to shift. " + daySlotHeader[targetSheet]+"'s " + timeSlotHeader[targetRow]+ " slot is full."); 
 			}
-		
 		}
-		
-	}
-	
-	// XXX: Might be modifiable to double as the search feature.
-		public static boolean dupeChecker(String target) {
-			for(int sh = 0; sh < shiftSchedule.length; sh++) {
-				for(int row = 0; row < shiftSchedule[sh].length; row++) {
-					for(int col = 0; col < shiftSchedule[sh][row].length; col++) {
-						
-						if(shiftSchedule[sh][row][col].equals(target)) return true;
-							
-						}}}
-				return false;
-			}
-			
 
-	/*
-	 * REQUIRED METHOD Assigned to : Gabriel ver - 0
-	 */
-	public static void validateInput() {
+		if (assigned) {
+			System.out.println("Employee successfully assigned.");
+		} else {
+			System.out.println("Shift is already full. Cannot assign employee.");
+			return;
+		}
 
-	}
-
-	/*
-	 * REQUIRED METHOD Assigned to : Cairo ver - 0
-	 */
-	public static void checkDuplicateEmployee() {
-
-	}
-
-	/*
-	 * REQUIRED METHOD Assigned to : ? ver - 0
-	 */
-	public static void updateOrRemoveEmployee() {
-		// Menu test delete nalang
-		System.out.println("Update / Remove Employee test");
-	}
-
-	/*
-	 * REQUIRED METHOD Assigned to : Galasao ver - 0
-	 */
-	public static void searchEmployee() {
-		// Menu test delete nalang
-		System.out.println("Search Employee test");
-	}
-
-	/*
-	 * REQUIRED METHOD Assigned to : Granada ver - 0
-	 */
-	public static void calculateWorkingHours() {
-
+		// --- Step 6: Display updated schedule ---
+		displaySchedule();
 	}
 
 	/*
 	 * REQUIRED METHOD Assigned to : Ken ver - 1
 	 */
 	public static void menuController() {
-		System.out.println("===================================================");
-		System.out.println("\t\t     MAIN-MENU");
-		System.out.println("===================================================");
+		System.out.println("======================================================");
+		System.out.println("\t\t\tMAIN-MENU");
+		System.out.println("======================================================");
 		System.out.println("[1] View Employee Schedule");
 		System.out.println("[2] Assign Employee to a Shift");
 		System.out.println("[3] Update / Remove Employee");
 		System.out.println("[4] Search Employee");
-		System.out.println("[5] Exit");
+		System.out.println("[5] Daily Summary Report");
+		System.out.println("[6] Exit");
 
 		System.out.print("\nEnter your Choice: ");
 		input = scan.nextInt();
@@ -303,21 +281,21 @@ System.out.println(">> Assigning Employee to Shift:");
 			assignEmployee();
 			break;
 		case 3:
-			updateOrRemoveEmployee();
 			break;
 		case 4:
-			searchEmployee();
 			break;
 		case 5:
 			exit();
 			break;
-
+		case 6:
+			exit();
+			break;
+		default:
+			System.out.println("");
+			menuController();
 		}
 	}// menuController() method
 
-	/*
-	 * REQUIRED METHOD Assigned to : ? ver - 0
-	 */
 	public static void dailySummaryReport() {
 
 	}
