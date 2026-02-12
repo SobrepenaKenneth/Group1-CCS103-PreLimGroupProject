@@ -1,72 +1,90 @@
 import java.util.Scanner;
 
 /**
- * Version 1.4 palitan tong version everytime na mag edit po kayo! Always
- * refresh!!
+ * Version 2.5 palitan tong version everytime na mag edit po kayo! Always
+ * refresh in Codiva!!
  * 
- * We will assist as much as we can!
+ * We will assist as much as we can! "ken"
  */
 public class Final {
 	/**
 	 * Properties: This are the variables that will be used throughout the software
 	 */
 	private static Scanner scan = new Scanner(System.in);
-	private static final int row = 3;
-	private static final int column = 6;
-	private static String daySlotHeader[] = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
-			"FRIDAY", "SATURDAY" };
+
+	// Array for Days
+	private static String daySlotHeader[] = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
+	// Array for Shifts
 	private static String shiftSlotHeader[] = { "M", "A", "E" };
+	// Mall Schedule
 	private static String mallSchedule[][][] = new String[6][3][10];
-	private static int days = 6; // faces
-	static final int timeSlot = 3; //
-	static int shifts; // columns
-	static String userInput = ""; // User Input container.
+
+	// Variables used in Methods
+	static final int timeSlot = 3;
+	static int shifts;
+	static String userInput = "";
 
 	// user input used in Menu
 	private static int input = 0;
 
+	/**
+	 * ======================= THE MAIN METHOD =======================
+	 * <p>
+	 * This is our entry point of the program, we want to ask the user to press
+	 * enter first before the program begins, by using the scanner nextLine()
+	 * method.
+	 */
 	public static void main(String[] args) {
 		System.out.println("=====================================================================================");
-		System.out.println("                         MALL EMPLOYEE SCHEDULING SYSTEM          ");
+		System.out.println("                           MALL EMPLOYEE SCHEDULING SYSTEM                           ");
 		System.out.println("=====================================================================================");
-		System.out.println("Legend: M = Morning | A = Afternoon | E - Evening");
-
-		System.out.println("\n      <<Press Enter to Begin Setup Process>>");
+		System.out.println("\n                       <<Press Enter to Begin Setup Process>>");
 		scan.nextLine();
-		
-		while(true) {
-		displaySchedule();
-		menuController();
-		}
-		
-	}
 
-	/*
-	 * REQUIRED METHOD Assigned to : Abo-Abo ver - 1
+		while (true) {
+			displaySchedule();
+			menuController();
+		}
+	}// main() method
+
+	/**
+	 * ======================= DISPLAY SCHEDULE METHOD =======================
+	 * <p>
+	 * This method displays the overall schedule of the Employees, Including the
+	 * total employees per day.
 	 */
 	public static void displaySchedule() {
-		int spaceLength = 0;
+		int spaceLength = 0; // This is used to control the spacing per column
+
+		// Header Design
 		System.out.println("=====================================================================================");
-		System.out.println("\t\t\t\tEMPLOYEE SCHEDULE");
+		System.out.println("                                 EMPLOYEE SCHEDULE                                   ");
 		System.out.println("=====================================================================================");
 		System.out.println("DAY            MORNING(M)                    AFTERNOON(A)                  EVENING(E)");
- 
+
+		// =====================
 		// Loop through each DAY
+		// =====================
 		for (int day = 0; day < mallSchedule.length; day++) {
 
-			int maxRows = 1;
+			int maxRows = 1; // How many stacked rows need to be printed
 
-			// This find MAX STACKED rows
+			// ----------------------------------------------------
+			// FIND THE MAXIMUM NUMBER OF EMPLOYEES IN ANY SHIFT
+			// FOR THIS SPECIFIC DAY
+			// ----------------------------------------------------
 			for (int shift = 0; shift < mallSchedule[day].length; shift++) {
 
-				int count = 0;
-				// Loop through each EMPLOYEE
+				int count = 0; // Counts employees in current shift
+
+				// this counts the non-null employees in this shift
 				for (int emp = 0; emp < mallSchedule[day][shift].length; emp++) {
 					if (mallSchedule[day][shift][emp] == null)
-						continue;
+						continue; // skips the empty slots
 					count++;
 				}
 
+				// Updates the maxRows if this shift has more employees
 				if (count > maxRows) {
 					maxRows = count;
 				}
@@ -81,26 +99,23 @@ public class Final {
 					for (int space = 1; space <= 15 - daySlotHeader[day].length(); space++) { // e2 start
 						System.out.print(" ");
 					}
-					
 				} else {
 					System.out.print("               "); // 12 spaces
-
 				}
 
 				// Loop through SHIFTs
 				for (int shift = 0; shift < mallSchedule[0].length; shift++) {
-					
-					
+
 					int index = 0;
 					String output = " ";
 					// This find EMPLOYEE for Row
-					
+
 					for (int emp = 0; emp < mallSchedule[day][shift].length; emp++) {
-						
+
 						if (mallSchedule[day][shift][emp] == null) {
 							output = "-";
 							spaceLength = 30 - output.length();
-							
+
 							continue;
 						}
 						if (index == row) {
@@ -110,14 +125,12 @@ public class Final {
 						}
 						index++;
 					}
-					
+
 					// No spaces for column 1
 					System.out.print(output);
 					for (int space = 1; space <= spaceLength; space++) { // e2 start
 						System.out.print(" ");
 					} // e1 loop end
-					
-					
 
 				}
 
@@ -140,33 +153,82 @@ public class Final {
 					total++;
 				}
 			}
-
-			System.out.println(daySlotHeader[day] + ": " + total);
+			System.out.println("\u2022 " + daySlotHeader[day] + ": " + total);
 		}
 		System.out.println();
-	}
+	}// > displaySchedule() method
 
-	/*
-	 * REQUIRED METHOD Assigned to : Paz ver - 0
+	/**
+	 * ======================= THE MAIN MENU METHOD =======================
+	 * <p>
+	 * This method is used to display the menu with the following options, view the
+	 * employee, assign or remove the employee, search the employee and exit the
+	 * system. I also included the daily summary report inside the main menu so that
+	 * user can quickly see it.
+	 */
+	public static void menuController() {
+		System.out.println("=====================================================================================");
+		System.out.println("                                    MAIN-MENU");
+		System.out.println("=====================================================================================");
+		System.out.println("[1] View Employee Schedule");
+		System.out.println("[2] Assign Employee to a Shift");
+		System.out.println("[3] Update / Remove Employee");
+		System.out.println("[4] Search Employee");
+		System.out.println("[5] Daily Summary Report");
+		System.out.println("[6] Exit");
+		System.out.print("\nEnter your Choice: ");
+		try {
+			input = Integer.parseInt(scan.nextLine());
+		} catch (NumberFormatException e) {
+			input = 0;
+		}
+		System.out.println();
+
+		switch (input) {
+		case 1:
+			displaySchedule();
+			break;
+		case 2:
+			assignEmployee();
+			break;
+		case 3:
+			break;
+		case 4:
+			searchEmployee();
+			break;
+		case 5:
+			exit();
+			break;
+		case 6:
+			exit();
+			break;
+		default:
+			System.out.println("> Invalid Input!");
+		}
+	}// > menuController() method
+
+	/**
+	 * ======================= THE ASSIGN EMPLOYEE METHOD =======================
+	 * <p>
+	 * This method is used to assign employees to a selected day shift and then
+	 * updates the schedule, and also allows multiple employees in one transaction
 	 */
 	public static void assignEmployee() {
-		
+
 		int shiftIndex, dayIndex;
 		boolean assigned = false;
-		
-		System.out.println("======================================================");
-		System.out.println("\t\t   ASSIGN EMPLOYEE");
-		System.out.println("======================================================");
+
+		System.out.println("=====================================================================================");
+		System.out.println("                                 ASSIGN EMPLOYEE");
+		System.out.println("=====================================================================================");
 		// --- Step 1: Input Day ---
-		
 
 		dayIndex = dayValidation();
 
-
 		// --- Step 2: Input Shift ---
-		
+
 		shiftIndex = shiftValidation();
-		
+
 		// --- Step 3: Input Employee Info ---
 		System.out.print("Enter Employee ID: ");
 		String empID = scan.nextLine();
@@ -176,82 +238,90 @@ public class Final {
 
 		System.out.print("Enter Role: ");
 		String empRole = scan.nextLine();
-		
+
 		String entry = empID + " - " + empName + " (" + empRole + ")";
 
 		// --- Step 4: Check for duplicate on the same day ---
-		// Calls the duplicate checking method which returns the earliest matching entry.
+		// Calls the duplicate checking method which returns the earliest matching
+		// entry.
 		String dupeValue = dupeChecker(empID + " -", dayIndex);
 		System.out.println("> " + dupeValue);
-		if(dupeValue == null) {
-		
-		for(int i = 0; i < mallSchedule[dayIndex][shiftIndex].length; i++) {
-			
-			
-			if(mallSchedule[dayIndex][shiftIndex][i] == null || mallSchedule[dayIndex][shiftIndex][i].equals("-")) // Checks if the slot is empty.
-			{
-				mallSchedule[dayIndex][shiftIndex][i] = entry;
-				System.out.println("> " + empName + " was assigned to " + shiftSlotHeader[shiftIndex] + " slot for " 
-				+  daySlotHeader[dayIndex] + ".");
-				assigned = true;
-				break;
-			} 
-		} 
-		if(!assigned) System.out.println("> Couldn't assign " + empName + ", all " + shiftSlotHeader[shiftIndex] + " slots for " 
-				+  daySlotHeader[dayIndex] + " are filled.");
-		
-		} else System.out.println("> " + empName + " is already assigned on a shift for " + shiftSlotHeader[shiftIndex] + " of " 
-				+  daySlotHeader[dayIndex] + "!");
-		
-		
-		
-		
+		if (dupeValue == null) {
 
-		// --- Step 6: Display updated schedule ---
-		
-		//displaySchedule();
-	}
+			for (int i = 0; i < mallSchedule[dayIndex][shiftIndex].length; i++) {
 
-	private static int dayValidation() { 
-		
+				if (mallSchedule[dayIndex][shiftIndex][i] == null || mallSchedule[dayIndex][shiftIndex][i].equals("-")) // Checks
+																														// if
+																														// the
+																														// slot
+																														// is
+																														// empty.
+				{
+					mallSchedule[dayIndex][shiftIndex][i] = entry;
+					System.out.println("> " + empName + " was assigned to " + shiftSlotHeader[shiftIndex] + " slot for "
+							+ daySlotHeader[dayIndex] + ".");
+					assigned = true;
+					break;
+				}
+			}
+			if (!assigned)
+				System.out.println("> Couldn't assign " + empName + ", all " + shiftSlotHeader[shiftIndex]
+						+ " slots for " + daySlotHeader[dayIndex] + " are filled.");
+
+		} else
+			System.out.println("> " + empName + " is already assigned on a shift for " + shiftSlotHeader[shiftIndex]
+					+ " of " + daySlotHeader[dayIndex] + "!");
+	}// assignEmployee() method
+
+	/**
+	 * ======================= DAY VALIDATION METHOD =======================
+	 * <p>
+	 * This method is used in the Assign Employee Method, The goal is to ask the
+	 * user the day.
+	 */
+	private static int dayValidation() {
 		int dayIndex = -1;
-		while(dayIndex == -1) {
-		System.out.print("Enter Day (MON, TUE, WED, THU, FRI, SAT): ");
-		String dayInput = scan.nextLine().toUpperCase();	
-		
-		switch (dayInput) {
-		case "MON":
-			dayIndex = 0;
-			break;
-		case "TUE":
-			dayIndex = 1;
-			break;
-		case "WED":
-			dayIndex = 2;
-			break;
-		case "THU":
-			dayIndex = 3;
-			break;
-		case "FRI":
-			dayIndex = 4;
-			break;
-		case "SAT":
-			dayIndex = 5;
-			break;
-		default:
-			dayIndex = -1;
-		}
+		while (dayIndex == -1) {
+			System.out.print("Enter Day (MON, TUE, WED, THU, FRI, SAT): ");
+			String dayInput = scan.nextLine().toUpperCase();
 
-		if (dayIndex == -1) {
-			System.out.println("Invalid Day!");
-		}
-		
-		
+			switch (dayInput) {
+			case "MON":
+				dayIndex = 0;
+				break;
+			case "TUE":
+				dayIndex = 1;
+				break;
+			case "WED":
+				dayIndex = 2;
+				break;
+			case "THU":
+				dayIndex = 3;
+				break;
+			case "FRI":
+				dayIndex = 4;
+				break;
+			case "SAT":
+				dayIndex = 5;
+				break;
+			default:
+				dayIndex = -1;
+			}
+
+			if (dayIndex == -1) {
+				System.out.println("Invalid Day!");
+			}
+
 		}
 		return dayIndex;
-		
-	}
-	
+	}// dayValidation() method
+
+	/**
+	 * ======================= SHIFT VALIDATION METHOD =======================
+	 * <p>
+	 * This method is used in the Assign Employee Method, The goal is to ask the
+	 * user the shift.
+	 */
 	private static int shiftValidation() {
 		int shiftIndex = -1;
 		while (shiftIndex == -1) {
@@ -282,100 +352,63 @@ public class Final {
 			}
 		}
 		return shiftIndex;
+	}// shiftValidation() method
 
-	}
-	
-	
-	/*
-	 * REQUIRED METHOD Assigned to : Ken ver - 1
+	/**
+	 * ================ SEARCHING THE EMPLOYEE METHOD =======================
+	 * <p>
+	 * This goal of the method is to search the ID or NAME of an Employee, Then it
+	 * will display the Assigned day, shift, roles, total working hours.F
 	 */
-	public static void menuController() {
-		System.out.println("======================================================");
-		System.out.println("\t\t\tMAIN-MENU");
-		System.out.println("======================================================");
-		System.out.println("[1] View Employee Schedule");
-		System.out.println("[2] Assign Employee to a Shift");
-		System.out.println("[3] Update / Remove Employee");
-		System.out.println("[4] Search Employee");
-		System.out.println("[5] Daily Summary Report");
-		System.out.println("[6] Exit");
-
-		System.out.print("\nEnter your Choice: ");
-		try {
-		input = Integer.parseInt(scan.nextLine());
-		} catch(NumberFormatException e) {
-			input = 0;
-		}
-		System.out.println();
-
-		switch (input) {
-		case 1:
-			displaySchedule();
-			break;
-		case 2:
-			assignEmployee();
-			break;
-		case 3:
-			break;
-		case 4:
-			searchEmployee();
-			break;
-		case 5:
-			exit();
-			break;
-		case 6:
-			exit();
-			break;
-		default:
-			System.out.println("> Invalid Input!");
-		}
-	}// menuController() method
-
 	public static void searchEmployee() {
-		String daySlotHeader[] = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
-		String shiftSlotHeader[] = {"MORNING", "AFTERNOON", "EVENING"};
+		String daySlotHeader[] = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
+		String shiftSlotHeader[] = { "MORNING", "AFTERNOON", "EVENING" };
 		boolean hasSchedule = false;
-		System.out.println("===================================================");
-		System.out.println("\t\t SEARCH EMPLOYEE");
-		System.out.println("===================================================");
+		System.out.println("=====================================================================================");
+		System.out.println("                                  SEARCH EMPLOYEE");
+		System.out.println("=====================================================================================");
 
 		System.out.print("Enter Employee ID to Search: ");
 		String searchName = scan.nextLine();
 
-		
 		String matchingUser = dupeChecker(searchName);
 
 		if (matchingUser != null) {
 			System.out.println("\n--- Employee Found! ---");
-			System.out.println("Name: " + matchingUser.substring(matchingUser.lastIndexOf("-") + 2, matchingUser.lastIndexOf("(") - 1));
-			System.out.println("Role: " + matchingUser.substring(matchingUser.lastIndexOf("(") + 1, matchingUser.length()-1));
+			System.out.println("Name: "
+					+ matchingUser.substring(matchingUser.lastIndexOf("-") + 2, matchingUser.lastIndexOf("(") - 1));
+			System.out.println(
+					"Role: " + matchingUser.substring(matchingUser.lastIndexOf("(") + 1, matchingUser.length() - 1));
 			System.out.println("-----------------------");
 			System.out.println("Current Schedule:");
 
 			int totalHours = 0;
 			// Loop through the main Array
-		for (int sh = 0; sh < mallSchedule.length; sh++) {
-			for (int row = 0; row < mallSchedule[sh].length; row++) {
-				for (int col = 0; col < mallSchedule[sh][row].length; col++) {
-					hasSchedule = true;
-					if(mallSchedule[sh][row][col] != null && mallSchedule[sh][row][col].contains(searchName)) {
-						System.out.println("> " + daySlotHeader[sh] + ", " + shiftSlotHeader[row] + " shift.");
-						if(row == 0) totalHours += 4;
-					else if(row == 1) totalHours += 2;
-					else if(row == 2) totalHours += 6;
-					
+			for (int sh = 0; sh < mallSchedule.length; sh++) {
+				for (int row = 0; row < mallSchedule[sh].length; row++) {
+					for (int col = 0; col < mallSchedule[sh][row].length; col++) {
+						hasSchedule = true;
+						if (mallSchedule[sh][row][col] != null && mallSchedule[sh][row][col].contains(searchName)) {
+							System.out.println("> " + daySlotHeader[sh] + ", " + shiftSlotHeader[row] + " shift.");
+							if (row == 0)
+								totalHours += 4;
+							else if (row == 1)
+								totalHours += 2;
+							else if (row == 2)
+								totalHours += 6;
+
+						}
 					}
-				}	
+				}
 			}
-		}
-		
+
 			if (!hasSchedule) {
 				System.out.println("No shifts assigned yet.");
 			} else {
-				
+
 				System.out.println("-----------------------");
 				System.out.println("> Total Working Hours: " + totalHours);
-				
+
 			}
 
 		} else {
@@ -385,50 +418,73 @@ public class Final {
 		// Short pause before going back to menu
 		System.out.println("\nPress Enter to return to Main Menu...");
 		scan.nextLine();
-	}
-	
-	/* XXX: DO NOT HOLLOW PURPLE :: RELATED METHOD searchEmployee()
-	 *  Returns the earliest shift entry that contains the inputted ID.
+	}// searchEmployee() method
+
+	/*
+	 * XXX: DO NOT HOLLOW PURPLE :: RELATED METHOD searchEmployee() Returns the
+	 * earliest shift entry that contains the inputted ID.
 	 */
-	
+
 	public static String dupeChecker(String target) {
-		for(int sh = 0; sh < mallSchedule.length; sh++) {
-			for(int row = 0; row < mallSchedule[sh].length; row++) {
-				for(int col = 0; col < mallSchedule[sh][row].length; col++) {
-					
-					if(mallSchedule[sh][row][col] != null && mallSchedule[sh][row][col].startsWith(target)) {
-						
+		for (int sh = 0; sh < mallSchedule.length; sh++) {
+			for (int row = 0; row < mallSchedule[sh].length; row++) {
+				for (int col = 0; col < mallSchedule[sh][row].length; col++) {
+
+					if (mallSchedule[sh][row][col] != null && mallSchedule[sh][row][col].startsWith(target)) {
+
 						return mallSchedule[sh][row][col];
-						
-					
-					}
+
 					}
 				}
 			}
-			return null;
 		}
-	//Overloaded dupeChecker: Takes in specific layer to search. Used in duplicate checking in assignEmployee();
+		return null;
+	}
+
+	// Overloaded dupeChecker: Takes in specific layer to search. Used in duplicate
+	// checking in assignEmployee();
 	public static String dupeChecker(String target, int dayIndex) {
-		
-		for(int row = 0; row < mallSchedule[dayIndex].length; row++) {
-				for(int col = 0; col < mallSchedule[dayIndex][row].length; col++) {
-					
-					if(mallSchedule[dayIndex][row][col] != null && mallSchedule[dayIndex][row][col].startsWith(target)) {
-						
-						return mallSchedule[dayIndex][row][col];
-						
-					
-					}
+
+		for (int row = 0; row < mallSchedule[dayIndex].length; row++) {
+			for (int col = 0; col < mallSchedule[dayIndex][row].length; col++) {
+
+				if (mallSchedule[dayIndex][row][col] != null && mallSchedule[dayIndex][row][col].startsWith(target)) {
+
+					return mallSchedule[dayIndex][row][col];
+
 				}
-					}
-			return null;
+			}
 		}
-	
-	
+		return null;
+	}
 
 	public static void exit() {
-		// Menu test delete nalang
-		System.out.println("Thank you for using the Mall Employee Scheduling System!");
+
+		while (true) {
+			System.out.print("Are you sure you want to exit? Y or N: ");
+			String exitInput = scan.nextLine().toUpperCase();
+
+			switch (exitInput) {
+
+			case "Y":
+				endProgram();
+				System.exit(0); // 🔥 This actually terminates the program
+				break;
+
+			case "N":
+				System.out.println();
+				return; // Go back to where exit() was called
+
+			default:
+				System.out.println("Invalid Input! Please enter Y or N.");
+			}
+		}
+
+	} // exit() method
+
+	public static void endProgram() {
+		System.out.println("\nThank you for using the Mall Employee Scheduling System!");
 		System.out.println("Program Terminated");
-	}// exit() method
+	}
+
 }
