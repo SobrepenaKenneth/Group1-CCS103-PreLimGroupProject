@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Version 2.5 palitan tong version everytime na mag edit po kayo! Always
+ * Version 2.8 palitan tong version everytime na mag edit po kayo! Always
  * refresh in Codiva!!
  * 
  * We will assist as much as we can! "ken"
@@ -60,7 +60,8 @@ public class Final {
 		System.out.println("=====================================================================================");
 		System.out.println("                                 EMPLOYEE SCHEDULE                                   ");
 		System.out.println("=====================================================================================");
-		System.out.println("DAY            MORNING(M)                    AFTERNOON(A)                  EVENING(E)");
+		System.out.println("DAY        |   MORNING(M)               AFTERNOON(A)             EVENING(E)");
+		System.out.println("-------------------------------------------------------------------------------------");
 
 		// =====================
 		// Loop through each DAY
@@ -96,11 +97,12 @@ public class Final {
 				// Print day only on first row
 				if (row == 0) {
 					System.out.print(daySlotHeader[day]);
-					for (int space = 1; space <= 15 - daySlotHeader[day].length(); space++) { // e2 start
+					for (int space = 1; space <= 11 - daySlotHeader[day].length(); space++) {
 						System.out.print(" ");
 					}
+					System.out.print("|   "); // test |
 				} else {
-					System.out.print("               "); // 12 spaces
+					System.out.print("           |   "); // 12 spaces
 				}
 
 				// Loop through SHIFTs
@@ -114,13 +116,12 @@ public class Final {
 
 						if (mallSchedule[day][shift][emp] == null) {
 							output = "-";
-							spaceLength = 30 - output.length();
-
+							spaceLength = 25 - output.length();
 							continue;
 						}
 						if (index == row) {
 							output = mallSchedule[day][shift][emp]; // print the actual assigned employee
-							spaceLength = 30 - output.length();
+							spaceLength = 25 - output.length();
 							break;
 						}
 						index++;
@@ -136,12 +137,15 @@ public class Final {
 
 				System.out.println();
 			}
+			System.out.println("-------------------------------------------------------------------------------------");
 		}
 
 		// TOTAL EMPLOYEES PER DAY
 		System.out.println("\nTOTAL EMPLOYEES PER DAY:");
 
-		for (int day = 0; day < mallSchedule.length; day++) {
+		for (
+
+				int day = 0; day < mallSchedule.length; day++) {
 
 			int total = 0;
 
@@ -192,6 +196,7 @@ public class Final {
 			assignEmployee();
 			break;
 		case 3:
+			subMenu();
 			break;
 		case 4:
 			searchEmployee();
@@ -216,7 +221,6 @@ public class Final {
 	public static void assignEmployee() {
 
 		int shiftIndex, dayIndex;
-		boolean assigned = false;
 
 		System.out.println("=====================================================================================");
 		System.out.println("                                 ASSIGN EMPLOYEE");
@@ -244,33 +248,69 @@ public class Final {
 		// --- Step 4: Check for duplicate on the same day ---
 		// Calls the duplicate checking method which returns the earliest matching
 		// entry.
-		String dupeValue = dupeChecker(empID + " -", dayIndex);
-		System.out.println("> " + dupeValue);
-		if (dupeValue == null) {
+		boolean assignAgain = true;
 
-			for (int i = 0; i < mallSchedule[dayIndex][shiftIndex].length; i++) {
+		while (assignAgain) {
 
-				if (mallSchedule[dayIndex][shiftIndex][i] == null || mallSchedule[dayIndex][shiftIndex][i].equals("-")) // Checks
-																														// if
-																														// the
-																														// slot
-																														// is
-																														// empty.
-				{
-					mallSchedule[dayIndex][shiftIndex][i] = entry;
-					System.out.println("> " + empName + " was assigned to " + shiftSlotHeader[shiftIndex] + " slot for "
-							+ daySlotHeader[dayIndex] + ".");
-					assigned = true;
+			boolean assigned = false;
+
+			// --- Step 4: Check for duplicate on the same day ---
+			String dupeValue = dupeChecker(empID + " -", dayIndex);
+
+			if (dupeValue == null) {
+
+				for (int i = 0; i < mallSchedule[dayIndex][shiftIndex].length; i++) {
+
+					if (mallSchedule[dayIndex][shiftIndex][i] == null
+							|| mallSchedule[dayIndex][shiftIndex][i].equals("-")) {
+
+						mallSchedule[dayIndex][shiftIndex][i] = entry;
+						System.out.println(
+								"-------------------------------------------------------------------------------------");
+						System.out.println("> " + empID + " - " + empName + " was successfully assigned to "
+								+ shiftSlotHeader[shiftIndex] + " shift on " + daySlotHeader[dayIndex] + ".");
+
+						assigned = true;
+						break;
+					}
+				}
+
+				if (!assigned) {
+					System.out.println("> ERROR: All " + shiftSlotHeader[shiftIndex] + " shift slots on "
+							+ daySlotHeader[dayIndex] + " are already filled.");
+				}
+
+			} else {
+
+				System.out
+						.println("> ERROR: " + dupeValue + " is already assigned on " + daySlotHeader[dayIndex] + ".");
+			}
+
+			// --- Ask user if they want to assign again ---
+			// - Ken
+
+			while (true) {
+				System.out.print("\nDo you want to assign again? Y or N: ");
+				String choice = scan.nextLine().toUpperCase();
+				switch (choice) {
+
+				case "Y":
+					System.out.println();
+					assignEmployee();
 					break;
+
+				case "N":
+					System.out.println();
+					menuController();
+					;
+					return; // Go back to where exit() was called
+
+				default:
+					System.out.println("Invalid Input! Please enter Y or N.");
 				}
 			}
-			if (!assigned)
-				System.out.println("> Couldn't assign " + empName + ", all " + shiftSlotHeader[shiftIndex]
-						+ " slots for " + daySlotHeader[dayIndex] + " are filled.");
 
-		} else
-			System.out.println("> " + empName + " is already assigned on a shift for " + shiftSlotHeader[shiftIndex]
-					+ " of " + daySlotHeader[dayIndex] + "!");
+		}
 	}// assignEmployee() method
 
 	/**
@@ -331,7 +371,6 @@ public class Final {
 			System.out.println("    \u2022 [E] Evening");
 			System.out.print("\nEnter your Choice: ");
 			String shiftInput = scan.nextLine().toUpperCase();
-			System.out.println();
 
 			switch (shiftInput) {
 			case "M":
@@ -419,6 +458,74 @@ public class Final {
 		System.out.println("\nPress Enter to return to Main Menu...");
 		scan.nextLine();
 	}// searchEmployee() method
+	
+	/**
+	 * This is a submenu for Update and Remove
+	 */
+	public static void subMenu() {
+		System.out.println("=====================================================================================");
+		System.out.println("                                    UPDATE OR REMOVE EMPLOYEE");
+		System.out.println("=====================================================================================");
+		System.out.println("[1] Update Employee");
+		System.out.println("[2] Remove Employee");
+		System.out.print("\nEnter your Choice: ");
+		try {
+			input = Integer.parseInt(scan.nextLine());
+		} catch (NumberFormatException e) {
+			input = 0;
+		}
+		System.out.println();
+
+		switch (input) {
+		case 1:
+			updateEmployee();
+			break;
+		case 2:
+			removeEmployee();
+			break;
+		default:
+			System.out.println("> Invalid Input!");
+		}
+	}
+
+	public static void removeEmployee() {
+		System.out.println("-------------------------------------------------------------------------------------");
+		System.out.print("Enter Name or ID: ");
+		String nameForRemoval = scan.nextLine();
+		for (int i = 0; i < mallSchedule.length; i++) {
+			for (int j = 0; j < mallSchedule[i].length; j++) {
+				for (int k = 0; k < mallSchedule[i][j].length; k++) {
+					if (mallSchedule[i][j][k] != null) {
+						if (mallSchedule[i][j][k].toLowerCase().contains(nameForRemoval.toLowerCase())) {
+							mallSchedule[i][j][k] = null;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static void updateEmployee() {
+		System.out.println("-------------------------------------------------------------------------------------");
+		System.out.print("Enter Name or ID: ");
+		String nameForRemoval = scan.nextLine();
+
+		System.out.println("Enter Name or ID replace: ");
+		String nameForUpdate = scan.nextLine();
+		for (int i = 0; i < mallSchedule.length; i++) {
+			for (int j = 0; j < mallSchedule[i].length; j++) {
+				for (int k = 0; k < mallSchedule[i][j].length; k++) {
+					if (mallSchedule[i][j][k] != null) {
+						if (mallSchedule[i][j][k].toLowerCase().contains(nameForRemoval.toLowerCase())) {
+							mallSchedule[i][j][k] = nameForUpdate;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/*
 	 * XXX: DO NOT HOLLOW PURPLE :: RELATED METHOD searchEmployee() Returns the
@@ -467,8 +574,12 @@ public class Final {
 			switch (exitInput) {
 
 			case "Y":
-				endProgram();
-				System.exit(0); // 🔥 This actually terminates the program
+				System.out.println("\nThank you for using the Mall Employee Scheduling System!");
+				System.out.println("Program Terminated");
+				// I couldn't figure out a way to terminate this because this method only prints
+				// not terminate!
+				// But i found this method in the system
+				System.exit(0);
 				break;
 
 			case "N":
@@ -481,10 +592,5 @@ public class Final {
 		}
 
 	} // exit() method
-
-	public static void endProgram() {
-		System.out.println("\nThank you for using the Mall Employee Scheduling System!");
-		System.out.println("Program Terminated");
-	}
 
 }
