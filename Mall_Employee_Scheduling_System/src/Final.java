@@ -196,10 +196,7 @@ public class Final {
 	/**
 	 * MAIN MENU CONTROLLER METHOD
 	 * 
-	 * Displays the main menu options and routes user to appropriate functionality.
-	 * Options include: 1. View Employee Schedule (already shown, but can be
-	 * refreshed) 2. Assign Employee to a Shift 3. Update / Remove Employee
-	 * (navigates to submenu) 4. Search Employee 5. Daily Summary Report 6. Exit
+	 * Displays the main menu options and routes user to appropriate functionality
 	 */
 	public static void menuController() {
 		// Display menu header
@@ -345,8 +342,6 @@ public class Final {
 					// Get new day and shift for next assignment
 					System.out.println();
 					assignIndex = assignEmployee();
-					dayIndex = dayValidation();
-					shiftIndex = shiftValidation();
 					break; // Exit confirmation loop, continue outer while loop
 
 				} else if (choice.equals("N")) {
@@ -784,7 +779,6 @@ public class Final {
 	 * DAILY SUMMARY REPORT METHOD
 	 * 
 	 * Generates a summary report showing employee counts per shift for each day.
-	 * Useful for managers to see staffing levels at a glance.
 	 */
 	public static void dailySummaryReport() {
 		System.out.println("=====================================================================================");
