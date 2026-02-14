@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Version 2.8 palitan tong version everytime na mag edit po kayo! Always
+ * Version 2.8.1 palitan tong version everytime na mag edit po kayo! Always
  * refresh in Codiva!!
  * 
  * We will assist as much as we can! "ken"
@@ -458,7 +458,7 @@ public class Final {
 		System.out.println("\nPress Enter to return to Main Menu...");
 		scan.nextLine();
 	}// searchEmployee() method
-	
+
 	/**
 	 * This is a submenu for Update and Remove
 	 */
@@ -508,22 +508,65 @@ public class Final {
 
 	public static void updateEmployee() {
 		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.print("Enter Name or ID: ");
-		String nameForRemoval = scan.nextLine();
+		System.out.print("Enter Employee ID to Update: ");
+		String empID = scan.nextLine();
 
-		System.out.println("Enter Name or ID replace: ");
-		String nameForUpdate = scan.nextLine();
+		// Check if employee exists first using paz dupeChecker
+		String existing = dupeChecker(empID + " -");
+
+		if (existing == null) {
+			System.out.println("> ERROR: Employee not found!");
+			return;
+		}
+
+		// Extract old name and role (optional display)
+		System.out.println("\nCurrent Record: " + existing);
+
+		System.out.print("Enter New Employee Name: ");
+		String newName = scan.nextLine();
+
+		System.out.print("Enter New Role: ");
+		String newRole = scan.nextLine();
+
+		String updatedEntry = empID + " - " + newName + " (" + newRole + ")";
+
+		boolean updated = false;
+
+		// Replace ALL occurrences
 		for (int i = 0; i < mallSchedule.length; i++) {
 			for (int j = 0; j < mallSchedule[i].length; j++) {
 				for (int k = 0; k < mallSchedule[i][j].length; k++) {
-					if (mallSchedule[i][j][k] != null) {
-						if (mallSchedule[i][j][k].toLowerCase().contains(nameForRemoval.toLowerCase())) {
-							mallSchedule[i][j][k] = nameForUpdate;
-							break;
+
+					String value = mallSchedule[i][j][k];
+
+					if (value != null) {
+
+						boolean match = true;
+						String target = empID + " -";
+
+						// If value is shorter than target, it can't match
+						if (value.length() < target.length()) {
+							match = false;
+						} else {
+							for (int x = 0; x < target.length(); x++) {
+								if (value.charAt(x) != target.charAt(x)) {
+									match = false;
+									break;
+								}
+							}
+						}
+
+						if (match) {
+							mallSchedule[i][j][k] = updatedEntry;
 						}
 					}
+
 				}
 			}
+		}
+
+		if (updated) {
+			System.out.println("\n> Employee successfully updated!");
 		}
 	}
 
