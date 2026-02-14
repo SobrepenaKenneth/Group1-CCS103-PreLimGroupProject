@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 /**
- * Version 2.8.1 palitan tong version everytime na mag edit po kayo! Always
+ * Version 2.9 palitan tong version everytime na mag edit po kayo! Always
  * refresh in Codiva!!
  * 
  * We will assist as much as we can! "ken"
@@ -202,7 +202,7 @@ public class Final {
 			searchEmployee();
 			break;
 		case 5:
-			exit();
+			dailySummaryReport(); // Daily Summary Report
 			break;
 		case 6:
 			exit();
@@ -288,24 +288,21 @@ public class Final {
 
 			// --- Ask user if they want to assign again ---
 			// - Ken
+			// There is a error here
 
+			// Fix loop
 			while (true) {
 				System.out.print("\nDo you want to assign again? Y or N: ");
 				String choice = scan.nextLine().toUpperCase();
-				switch (choice) {
 
-				case "Y":
-					System.out.println();
-					assignEmployee();
-					break;
-
-				case "N":
-					System.out.println();
-					menuController();
-					;
-					return; // Go back to where exit() was called
-
-				default:
+				if (choice.equals("Y")) {
+					// Get new day and shift instead of restarting entire method
+					dayIndex = dayValidation();
+					shiftIndex = shiftValidation();
+					// Continue with the assignment logic...
+				} else if (choice.equals("N")) {
+					return;
+				} else {
 					System.out.println("Invalid Input! Please enter Y or N.");
 				}
 			}
@@ -479,9 +476,13 @@ public class Final {
 		switch (input) {
 		case 1:
 			updateEmployee();
+			System.out.println("\nPress Enter to continue...");
+			scan.nextLine();
 			break;
 		case 2:
 			removeEmployee();
+			System.out.println("\nPress Enter to continue...");
+			scan.nextLine();
 			break;
 		default:
 			System.out.println("> Invalid Input!");
@@ -492,18 +493,31 @@ public class Final {
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.print("Enter Name or ID: ");
 		String nameForRemoval = scan.nextLine();
+
+		boolean found = false;
+
 		for (int i = 0; i < mallSchedule.length; i++) {
 			for (int j = 0; j < mallSchedule[i].length; j++) {
 				for (int k = 0; k < mallSchedule[i][j].length; k++) {
-					if (mallSchedule[i][j][k] != null) {
-						if (mallSchedule[i][j][k].toLowerCase().contains(nameForRemoval.toLowerCase())) {
-							mallSchedule[i][j][k] = null;
-							break;
-						}
+					if (mallSchedule[i][j][k] != null
+							&& mallSchedule[i][j][k].toLowerCase().contains(nameForRemoval.toLowerCase())) {
+
+						System.out.println("Removing: " + mallSchedule[i][j][k]);
+						mallSchedule[i][j][k] = null;
+						found = true;
 					}
 				}
 			}
 		}
+
+		if (found) {
+			System.out.println("> Employee(s) removed successfully!");
+		} else {
+			System.out.println("> No employee found matching '" + nameForRemoval + "'");
+		}
+
+		System.out.println("\nPress Enter to continue...");
+		scan.nextLine();
 	}
 
 	public static void updateEmployee() {
@@ -527,6 +541,8 @@ public class Final {
 
 		System.out.print("Enter New Role: ");
 		String newRole = scan.nextLine();
+
+		System.out.println();
 
 		String updatedEntry = empID + " - " + newName + " (" + newRole + ")";
 
@@ -606,6 +622,31 @@ public class Final {
 			}
 		}
 		return null;
+	}
+
+	public static void dailySummaryReport() {
+		System.out.println("=====================================================================================");
+		System.out.println("                              DAILY SUMMARY REPORT");
+		System.out.println("=====================================================================================");
+
+		for (int day = 0; day < mallSchedule.length; day++) {
+			System.out.println("\n" + daySlotHeader[day] + ":");
+
+			for (int shift = 0; shift < mallSchedule[day].length; shift++) {
+				int count = 0;
+				System.out.print("  " + shiftSlotHeader[shift] + ": ");
+
+				for (int emp = 0; emp < mallSchedule[day][shift].length; emp++) {
+					if (mallSchedule[day][shift][emp] != null) {
+						count++;
+					}
+				}
+				System.out.println(count + " employees");
+			}
+		}
+
+		System.out.println("\nPress Enter to return to Main Menu...");
+		scan.nextLine();
 	}
 
 	public static void exit() {
