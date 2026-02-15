@@ -1,14 +1,11 @@
 import java.util.Scanner;
 
 /**
- * MALL EMPLOYEE SCHEDULING SYSTEM Version: 2.9.1
+ * MALL EMPLOYEE SCHEDULING SYSTEM Version: 3.0.2
  * 
- * A scheduling system for mall employees that allows: 
- * - Viewing employee schedules 
- * - Assigning employees to shifts 
- * - Updating/removing employee records 
- * - Searching for employees 
- * - Generating daily summary reports
+ * A scheduling system for mall employees that allows: - Viewing employee
+ * schedules - Assigning employees to shifts - Updating/removing employee
+ * records - Searching for employees - Generating daily summary reports
  * 
  * This program strictly uses only primitive arrays and no advanced Java
  * libraries as per requirements (no ArrayList, Collections, etc.)
@@ -18,10 +15,10 @@ public class Final {
 	// PROPERTIES / CLASS VARIABLES
 	// =====================================================================================
 
-	// Scanner object for reading user input 
+	// Scanner object for reading user input
 	private static Scanner scan = new Scanner(System.in);
 
-	/** Array of day names for display and indexing (6 days: MONDAY to SATURDAY) */
+	// Array of days names for display and indexing (6 days: MONDAY to SATURDAY)
 	private static String daySlotHeader[] = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
 
 	/**
@@ -30,13 +27,18 @@ public class Final {
 	 */
 	private static String shiftSlotHeader[] = { "M", "A", "E" };
 
-	/**
-	 * 3D Array storing the complete mall schedule Dimensions:
-	 * [DAY][SHIFT][EMPLOYEE_SLOT] / 6 days / 3 shifts per day / 10 employee slots per shift (0-9)
-	 */
-	private static String mallSchedule[][][] = new String[6][3][10];
+	// Changed this to jagged to meet requirements v3.0.2
+	private static String mallSchedule[][][] = {
+		    { new String[3], new String[2], new String[4] }, // Monday
+		    { new String[2], new String[3], new String[3] }, // Tuesday
+		    { new String[4], new String[2], new String[2] }, // Wednesday
+		    { new String[3], new String[3], new String[3] }, // Thursday
+		    { new String[2], new String[4], new String[3] }, // Friday
+		    { new String[3], new String[2], new String[2] }, // Saturday
+		};
 
-	// User's menu choice input 
+
+	// User's menu choice input
 	private static int input = 0;
 
 	// =====================================================================================
@@ -69,8 +71,8 @@ public class Final {
 	/**
 	 * DISPLAY SCHEDULE METHOD
 	 * 
-	 * This method Displays the complete employee schedule in a table. 
-	 * Also calculates and displays total employees per day.
+	 * This method Displays the complete employee schedule in a table. Also
+	 * calculates and displays total employees per day.
 	 */
 	public static void displaySchedule() {
 		int spaceLength = 0; // Controls spacing between columns
@@ -128,7 +130,7 @@ public class Final {
 				}
 
 				// Loop through each shift (MORNING, AFTERNOON, EVENING)
-				for (int shift = 0; shift < mallSchedule[0].length; shift++) {
+				for (int shift = 0; shift < mallSchedule[day].length; shift++) {
 
 					int index = 0;
 					String output = " ";
@@ -208,7 +210,8 @@ public class Final {
 		System.out.println("[3] Update / Remove Employee");
 		System.out.println("[4] Search Employee");
 		System.out.println("[5] Daily Summary Report");
-		System.out.println("[6] Exit");
+		System.out.println("[6] Total Working Hours Per Employee");
+		System.out.println("[7] Exit");
 		System.out.print("\nEnter your Choice: ");
 
 		// Get user input with error handling
@@ -237,6 +240,9 @@ public class Final {
 			dailySummaryReport(); // Show daily summary
 			break;
 		case 6:
+			displayTotalHoursPerEmployee(); // Show total hours per employee v3.0.2
+			break;
+		case 7:
 			exit(); // Exit program
 			break;
 		default:
@@ -256,7 +262,8 @@ public class Final {
 	 * 3. Get employee details (ID, Name, Role) 4. Check for duplicate employee on
 	 * same day 5. Find first available slot and assign 6. Ask if user wants to
 	 * assign another employee
-	 * @return 
+	 * 
+	 * @return
 	 */
 	public static int assignEmployee() {
 
@@ -341,13 +348,11 @@ public class Final {
 				if (choice.equals("Y")) {
 					// Get new day and shift for next assignment
 					System.out.println();
-					assignIndex = assignEmployee();
-					break; // Exit confirmation loop, continue outer while loop
+					return assignEmployee();
 
 				} else if (choice.equals("N")) {
 					System.out.println();
-					displaySchedule();
-					menuController();
+					return 0;
 				} else {
 					System.out.println("Invalid Input! Please enter Y or N.");
 				}
@@ -808,6 +813,73 @@ public class Final {
 		System.out.println("\nPress Enter to return to Main Menu...");
 		scan.nextLine();
 	}
+
+	public static void displayTotalHoursPerEmployee() {
+
+		System.out.println("=====================================================================================");
+		System.out.println("                    TOTAL WORKING HOURS PER EMPLOYEE");
+		System.out.println("=====================================================================================");
+
+		// Temporary arrays to store unique employees and hours
+		String employees[] = new String[100]; // max possible entries
+		int hours[] = new int[100];
+
+		int count = 0;
+
+		// Loop entire schedule
+		for (int day = 0; day < mallSchedule.length; day++) {
+			for (int shift = 0; shift < mallSchedule[day].length; shift++) {
+				for (int slot = 0; slot < mallSchedule[day][shift].length; slot++) {
+
+					String value = mallSchedule[day][shift][slot];
+
+					if (value != null) {
+
+						// Check if employee already recorded
+						int existingIndex = -1;
+
+						for (int i = 0; i < count; i++) {
+							if (employees[i].equals(value)) {
+								existingIndex = i;
+								break;
+							}
+						}
+
+						// Determine shift hours
+						int shiftHours = 0;
+						if (shift == 0)
+							shiftHours = 4;
+						else if (shift == 1)
+							shiftHours = 2;
+						else if (shift == 2)
+							shiftHours = 6;
+
+						if (existingIndex == -1) {
+							// New employee
+							employees[count] = value;
+							hours[count] = shiftHours;
+							count++;
+						} else {
+							// Existing employee
+							hours[existingIndex] += shiftHours;
+						}
+					}
+				}
+			}
+		}
+
+		// Display result
+		for (int i = 0; i < count; i++) {
+			System.out.println("• " + employees[i] + " → " + hours[i] + " hours");
+		}
+
+		if (count == 0) {
+			System.out.println("No employees assigned yet.");
+		}
+
+		System.out.println("\nPress Enter to return...");
+		scan.nextLine();
+	}// End of displayTotalHoursPerEmployee
 
 	// =====================================================================================
 	// EXIT METHOD
