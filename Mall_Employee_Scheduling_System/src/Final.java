@@ -59,7 +59,6 @@ public class Final {
 
 		// Infinite loop - program runs until user chooses to exit
 		while (true) {
-			displaySchedule(); // Show current schedule
 			menuController(); // Show menu and handle user choice
 		}
 	}// main() method
@@ -225,7 +224,9 @@ public class Final {
 		// Route user based on choice
 		switch (input) {
 		case 1:
-			displaySchedule(); // Refresh schedule display
+		    displaySchedule();
+		    System.out.println("Press Enter to return to Main Menu...");
+		    scan.nextLine();
 			break;
 		case 2:
 			assignEmployee(); // Assign new employee to shift
