@@ -11,8 +11,6 @@ public class Main {
 	 * Properties: This are the variables that will be used throughout the software
 	 */
 	private static Scanner scan = new Scanner(System.in);
-	private static final int row = 3;
-	private static final int column = 6;
 	// Arrays for Days [COLUMN]
 	private static String daySlotHeader[] = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
 	// Arrays for Shifts [ROW]
@@ -26,7 +24,6 @@ public class Main {
 //	private static String employeeRoles[] = { "Homeless", "Cashier", "Security" };
 	// Arrays for Mall Schedule
 	private static String mallSchedule[][][] = new String[6][3][10]; // DAYS - SHIFTS - Employee
-	private static int days = 6; // faces
 	static final int timeSlot = 3; //
 	static int shifts; // columns
 	static String userInput = ""; // User Input container.

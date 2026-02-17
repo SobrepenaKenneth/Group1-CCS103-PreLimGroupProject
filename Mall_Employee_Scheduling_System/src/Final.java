@@ -871,7 +871,7 @@ public class Final {
 
 		// Display result
 		for (int i = 0; i < count; i++) {
-			System.out.println("• " + employees[i] + " → " + hours[i] + " hours");
+			System.out.println("\u2022 " + employees[i] + " \u279C " + hours[i] + " hours");
 		}
 
 		if (count == 0) {
